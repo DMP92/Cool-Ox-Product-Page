@@ -44,20 +44,22 @@ export default function Micelle({ mouse })
         >
             <Sparkles 
                 scale={ [ 5, 25, 5 ] }
-                count={ 1000 }
+                count={ 500 }
                 noise={ [ 0.25, 0.25, 0.25 ]}
                 speed={ 0.2}
+                size={ 1 }
+                color="#2a2a2e"
             />
             <group>
                 <Text 
                     font={"./ClashDisplay-Semibold.woff"}
                     fontSize={ 0.2 }
-                    position={ [ 0.5, 1, 1.25 ] }
+                    position={ [ 0.5, 1.15, 1.25 ] }
                     rotation-y={ - 0.0 }
                     maxWidth={ 3 }
                     textAlign="center"
                     lineHeight={ 0.8 }
-                    color={ "white" }
+                    color={ "black" }
                 >
                     Cool-Ox
                 </Text>
@@ -65,12 +67,12 @@ export default function Micelle({ mouse })
                 <Text 
                     font={"./ClashDisplay-Regular.woff"}
                     fontSize={ 0.1 }
-                    position={ [ 0.30, 0.85, 1.25 ] }
+                    position={ [ 0.30, 1, 1.25 ] }
                     rotation-y={ - 0.0 }
                     maxWidth={ 3 }
                     textAlign="left"
                     lineHeight={ 0.8 }
-                    color={ "white" }
+                    color={ "black" }
                 >
                     Cool-Ox
                 </Text>
