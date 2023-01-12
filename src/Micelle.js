@@ -8,7 +8,7 @@ const rsqw = (t, delta = 0.1, a = 1, f = 1 / (2 * Math.PI)) => (a / Math.atan(1 
 
 export default function Micelle({ mouse })
 {
-    const { nodes, materials, scene } = useGLTF('./micelleExport.glb')
+    const { nodes, materials, scene } = useGLTF('./micelle-export-final.glb')
     const blueMats = useTexture('./heads-matcap.png')
    
     const scroll = useScroll()
@@ -16,24 +16,52 @@ export default function Micelle({ mouse })
 
     console.log(scroll)
     const micelle = useRef()
+    const text = useRef()
+
     const standardRotation = 0
 
     const [ group, right, left, contaminant ] = useRefs()
 
+    const canvas = document.querySelector('canvas')
+
     useFrame((state, delta) => 
     {
-       const r1 = scroll.range(0 / 4, 1 / 4)
-        const r2 = scroll.range(1 / 4, 1 / 4)
+        const r1 = scroll.range(0 / 4, 3.5 / 4)
+        const r2 = scroll.range(3.5 / 4, 3.9 / 4)
         const r3 = scroll.visible(4 / 5, 1 / 5)
-        group.current.rotation.y = THREE.MathUtils.damp(group.current.rotation.y, (-Math.PI / 5) * r2, 0.01, delta)
-        group.current.position.x = THREE.MathUtils.damp(group.current.position.x, (-width / 7) * r2, 0.01, delta)
-        group.current.position.y = THREE.MathUtils.damp(group.current.position.y, -height * r2, 4, delta)
-        group.current.scale.x = group.current.scale.y = group.current.scale.z = THREE.MathUtils.damp(group.current.scale.z, 1 + 0.24 * (1 - rsqw(r1)), 5, delta)
-        group.current.rotation.y = - Math.PI + (Math.PI / 2) * rsqw(r1) + r2 * 0.33
-        // left.current.rotation.y = Math.PI + (Math.PI / 2) * rsqw(r1) - r2 * 0.39
+
+        const et = state.clock.getElapsedTime
+        const offset = 1 - scroll.offset
+
+        // group.current.rotation.y = THREE.MathUtils.damp(group.current.rotation.y, (-Math.PI / 5) * r2, 0.01, delta)
+        // group.current.position.x = THREE.MathUtils.damp(group.current.position.x, (-width / 7) * r2, 0.01, delta)
+        // group.current.scale.x = group.current.scale.y = group.current.scale.z = THREE.MathUtils.damp(group.current.scale.z, 1 + 0.24 * (1 - rsqw(r1)), 5, delta)
+        // group.current.rotation.y = - Math.PI + (Math.PI / 2) * rsqw(r1) + r2 * 0.33
+        // // left.current.rotation.y = Math.PI + (Math.PI / 2) * rsqw(r1) - r2 * 0.39
+        group.current.position.y = - scroll.offset * 0.5
+        text.current.position.y = - scroll.offset * 0.5
+
+        if (scroll.offset > 0)
+        {
+            group.current.rotation.y = - THREE.MathUtils.damp(right.current.rotation.y, scroll.offset * 7, 0.1, delta)
+            group.current.position.z = THREE.MathUtils.damp(group.current.position.z, scroll.offset * 1.5, 5, delta)
+
+            right.current.rotation.y = THREE.MathUtils.damp(right.current.rotation.y, scroll.offset * 0.85, 4, delta)
+            right.current.position.x =  THREE.MathUtils.damp(right.current.position.x, scroll.offset * 1, 4, delta)
+
+            left.current.rotation.y = THREE.MathUtils.damp(left.current.rotation.y, - scroll.offset * 0.85, 4, delta)
+            left.current.position.x = THREE.MathUtils.damp(left.current.position.x, - scroll.offset * 1, 4, delta)
+            // left.current.position.z = THREE.MathUtils.damp(left.current.position.z, - scroll.offset * 2, 4, delta)
+
+            contaminant.current.position.z = THREE.MathUtils.damp(contaminant.current.position.z, scroll.offset * 1.2, 5, delta)
+        }
+
+        // if (scroll.offset >= 0.5) group.current.position.z = THREE.MathUtils.damp(group.current.position.x, scroll.offset * 50, 2, delta)
+        
         // right.current.position.x = (Math.PI + (Math.PI / 2) * rsqw(r1) + r2 * 0.33) / 5
         // left.current.position.x = (Math.PI - (Math.PI / 2) * rsqw(r1) - r2 * 0.39) / 5
-        console.log(r2, r1, r3)
+        console.log('scroll offset', offset)
+        // console.log(THREE.MathUtils.damp(group.current.position.y, -height * r2, 4, delta), scroll.offset)
     })
 
     console.log(nodes, materials)
@@ -50,7 +78,8 @@ export default function Micelle({ mouse })
                 size={ 1 }
                 color="#2a2a2e"
             />
-            <group>
+            
+            <group ref={ text }>
                 <Text 
                     font={"./ClashDisplay-Semibold.woff"}
                     fontSize={ 0.2 }
@@ -82,7 +111,7 @@ export default function Micelle({ mouse })
             <group 
                 ref={ group } 
                 rotation-y={ standardRotation } 
-                position={ [ 0, -width * 0.7, 0 ] }  
+                position={ [ 0, -height / 2.65, 0 ] }  
             >
                 {/* Micelle Left */}
                 <group
@@ -129,6 +158,7 @@ export default function Micelle({ mouse })
 
                 {/* Contaminant */}
                 <mesh
+                    ref={ contaminant }
                     geometry={ nodes.contaminant.geometry }
                     material={ nodes.contaminant.material}
                     scale={ 0.8 }

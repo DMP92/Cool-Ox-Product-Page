@@ -28,9 +28,9 @@ export default function Experience()
         <Environment preset='city' />
 
         {/* <Scroll /> */}
-        <ScrollControls pages={4} damping={ 0.3 }>
+        <ScrollControls pages={10} damping={ 0.3 }>
             <Scroll>
-                <PresentationControls
+                {/* <PresentationControls
                     global
                     rotation={ [ 0.13, 0.1, 0] }
                     polar={ [ -0.4, 0.2 ] }
@@ -38,9 +38,9 @@ export default function Experience()
                     config={ { mass: 2, tension: 400 } }
                     snap={ { mass: 4, tension: 400 } }
                 >
-                    <Micelle />
-                </PresentationControls>
+                </PresentationControls> */}
             </Scroll>
+                    <Micelle />
         </ScrollControls>
 
     </>
