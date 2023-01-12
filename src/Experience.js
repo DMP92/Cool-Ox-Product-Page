@@ -1,23 +1,26 @@
-import { OrbitControls, useGLTF, PresentationControls } from '@react-three/drei'
+import { OrbitControls, useGLTF, PresentationControls, Environment } from '@react-three/drei'
 import * as THREE from 'three'
 import Micelle from './Micelle.js'
-import Scroll from './Scroll.js'
+import { Perf } from 'r3f-perf'
+import useScroll from './stores/useScroll.js'
 
 export default function Experience()
 {
-
-
+    const scroll = useScroll((state) => state)
+    console.log(scroll)
     return <>
+        <Perf position="top-left"/>
         {/* <OrbitControls /> */}
-        <directionalLight intensity={ 1.5 } position={ [ 2, 1, 8 ] }/>
-        <ambientLight intensity={ 0.8 }/>
+        <directionalLight intensity={ 1 } position={ [ -5, 1, 8 ] }/>
+        <ambientLight intensity={ 0.3 }/>
+        <Environment preset='city' />
 
         {/* <mesh>
             <boxGeometry args={ [ 1, 1 ] } />
             <meshStandardMaterial color={"red"} />
         </mesh> */}
 
-        <Scroll />
+        {/* <Scroll /> */}
 
         <PresentationControls
              global
