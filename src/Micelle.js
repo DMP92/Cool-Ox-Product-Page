@@ -1,5 +1,5 @@
 import { useGLTF, Text, Float, ScrollControls, Environment, Html, softShadows, useScroll, Sparkles, useTexture } from "@react-three/drei"
-import { useRef, useState } from "react"
+import { Suspense, useRef, useState } from "react"
 import { useFrame, useThree, Canvas } from "@react-three/fiber"
 import * as THREE from 'three'
 import useRefs from 'react-use-refs'
@@ -22,11 +22,14 @@ export default function Micelle({ mouse })
     const blueMats = useTexture('./heads-matcap.png')
     
     // Contaminant Textures
-    const contaminantColor = useTexture('./RoadDirt017_COL_3k-min.jpg')
-    const contaminantNRM = useTexture('./RoadDirt017_NRM_3K-min (1).jpg')
-    const contaminantGloss = useTexture('./RoadDirt017_GLOSS_3K-min.jpg')
-    const contaminantAO = useTexture('./RoadDirt017_AO_3K-min.jpg')
+    const contaminantColor = useTexture('./roadDirtColor.png')
+    const contaminantNRM = useTexture('./roadDirtDisp.png')
+    const contaminantGloss = useTexture('./roadDirtGloss.png')
+    const contaminantAO = useTexture('./roadDirtAO.png')
+
+    console.log(blueMats)
     
+    // console.log(photo)
     const standardRotation = 0
     
 
@@ -117,76 +120,77 @@ export default function Micelle({ mouse })
                 </Text>
             </group>
             
-
-            <group 
-                ref={ group } 
-                rotation-y={ standardRotation } 
-                position={ [ 0, -height / 2.65, 0 ] }  
-            >
-                {/* Micelle Left */}
-                <group
-                    ref={ left }
-                >
-                    <mesh
-                        geometry={ nodes.headsLeft.geometry }
-                        material={ nodes.headsLeft.material}
-                        scale={ 0.8 }
-                        roughness={ 0 }
-                        metalness={ 1 }
-                    >
-                        <meshStandardMaterial color={ '#243fa8' }  roughness={ 0.7 } envMapIntensity={ 0.85 } emissive="#135675" map={ blueMats } emissiveIntensity={ 0.05 }/>
-                    </mesh>
-
-                    <mesh
-                        geometry={ nodes.tailsLeft.geometry }
-                        material={ nodes.tailsLeft.material}
-                        scale={ 0.8 }
-                    >
-                        {/* <meshStandardMaterial color={ 'purple' } flatShading/> */}
-                    </mesh>
-                </group>
-
-                {/* Micelle Right */}
+            <Suspense>
                 <group 
-                    ref={ right }
+                    ref={ group } 
+                    rotation-y={ standardRotation } 
+                    position={ [ 0, -height / 2.65, 0 ] }  
                 >
+                    {/* Micelle Left */}
+                    <group
+                        ref={ left }
+                    >
+                        <mesh
+                            geometry={ nodes.headsLeft.geometry }
+                            material={ nodes.headsLeft.material}
+                            scale={ 0.8 }
+                            roughness={ 0 }
+                            metalness={ 1 }
+                        >
+                            <meshStandardMaterial color={ '#243fa8' }  roughness={ 0.7 } envMapIntensity={ 0.85 } emissive="#135675" map={ blueMats } emissiveIntensity={ 0.05 }/>
+                        </mesh>
+
+                        <mesh
+                            geometry={ nodes.tailsLeft.geometry }
+                            material={ nodes.tailsLeft.material}
+                            scale={ 0.8 }
+                        >
+                            {/* <meshStandardMaterial color={ 'purple' } flatShading/> */}
+                        </mesh>
+                    </group>
+
+                    {/* Micelle Right */}
+                    <group 
+                        ref={ right }
+                    >
+                        <mesh
+                            geometry={ nodes.headsRight.geometry }
+                            material={ nodes.headsRight.material}
+                            scale={ 0.8 }
+                        >
+                            <meshStandardMaterial color={ '#243fa8' }  roughness={ 0.7 } envMapIntensity={ 0.85 } emissive="#135675" map={ blueMats } emissiveIntensity={ 0.05 }/>
+                            {/* <meshStandardMaterial color={ 'purple' } flatShading/> */}
+                        </mesh>
+                        <mesh
+                            geometry={ nodes.tailsRight.geometry }
+                            material={ nodes.tailsRight.material}
+                            scale={ 0.8 }
+                        >
+                            {/* <meshStandardMaterial color={ 'purple' } flatShading/> */}
+                        </mesh>
+                    </group>
+
+
+
+                    {/* Contaminant */}
                     <mesh
-                        geometry={ nodes.headsRight.geometry }
-                        material={ nodes.headsRight.material}
+                        ref={ contaminant }
+                        geometry={ nodes.contaminant.geometry }
                         scale={ 0.8 }
                     >
-                        <meshStandardMaterial color={ '#243fa8' }  roughness={ 0.7 } envMapIntensity={ 0.85 } emissive="#135675" map={ blueMats } emissiveIntensity={ 0.05 }/>
-                        {/* <meshStandardMaterial color={ 'purple' } flatShading/> */}
-                    </mesh>
-                    <mesh
-                        geometry={ nodes.tailsRight.geometry }
-                        material={ nodes.tailsRight.material}
-                        scale={ 0.8 }
-                    >
-                        {/* <meshStandardMaterial color={ 'purple' } flatShading/> */}
+                        <meshStandardMaterial 
+                            color={ '#c0bbb6' } 
+                            normalMap={ contaminantNRM } 
+                            map={ contaminantColor } 
+                            envMapIntensity={ 0.5 } 
+                            roughnessMap={ contaminantGloss }
+                            aoMap={ contaminantAO }
+                            roughness= { 0.65 }
+                            displacementScale={ 0.1 }
+                            />
                     </mesh>
                 </group>
-
-
-
-                {/* Contaminant */}
-                <mesh
-                    ref={ contaminant }
-                    geometry={ nodes.contaminant.geometry }
-                    scale={ 0.8 }
-                >
-                    <meshStandardMaterial 
-                        color={ '#c0bbb6' } 
-                        normalMap={ contaminantNRM } 
-                        map={ contaminantColor } 
-                        envMapIntensity={ 0.5 } 
-                        roughnessMap={ contaminantGloss }
-                        aoMap={ contaminantAO }
-                        roughness= { 0.65 }
-                        displacementScale={ 0.1 }
-                        />
-                </mesh>
-            </group>
+            </Suspense>
         </Float>
     </>
 }

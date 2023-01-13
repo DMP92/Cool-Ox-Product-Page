@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "cool-ox-three": "file:public",
     "@react-three/drei": "^9.51.24",
     "@react-three/fiber": "^8.10.0",
     "leva": "^0.9.34",
