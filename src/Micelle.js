@@ -1,6 +1,6 @@
 import { useGLTF, Text, Float, ScrollControls, Environment, Html, softShadows, useScroll, Sparkles, useTexture } from "@react-three/drei"
-import { useRef } from "react"
-import { useFrame, useThree } from "@react-three/fiber"
+import { useRef, useState } from "react"
+import { useFrame, useThree, Canvas } from "@react-three/fiber"
 import * as THREE from 'three'
 import useRefs from 'react-use-refs'
 
@@ -8,30 +8,41 @@ const rsqw = (t, delta = 0.1, a = 1, f = 1 / (2 * Math.PI)) => (a / Math.atan(1 
 
 export default function Micelle({ mouse })
 {
-    const { nodes, materials, scene } = useGLTF('./micelle-export-final.glb')
-    const blueMats = useTexture('./heads-matcap.png')
-   
-    const scroll = useScroll()
-    const { width, height } = useThree((state) => state.viewport)
 
-    console.log(scroll)
+    const { nodes, materials, scene } = useGLTF('./micelle-export-final.glb')
+    const { width, height } = useThree((state) => state.viewport)
+    const scroll = useScroll()
+    
+    // References
+    const [ group, right, left, contaminant ] = useRefs()
     const micelle = useRef()
     const text = useRef()
-
+    
+    // Micelle Texture - Possibly
+    const blueMats = useTexture('./heads-matcap.png')
+    
+    // Contaminant Textures
+    const contaminantColor = useTexture('./RoadDirt017_COL_3k-min.jpg')
+    const contaminantNRM = useTexture('./RoadDirt017_NRM_3K-min (1).jpg')
+    const contaminantGloss = useTexture('./RoadDirt017_GLOSS_3K-min.jpg')
+    const contaminantAO = useTexture('./RoadDirt017_AO_3K-min.jpg')
+    
     const standardRotation = 0
+    
 
-    const [ group, right, left, contaminant ] = useRefs()
 
-    const canvas = document.querySelector('canvas')
 
     useFrame((state, delta) => 
     {
-        const r1 = scroll.range(0 / 4, 3.5 / 4)
-        const r2 = scroll.range(3.5 / 4, 3.9 / 4)
-        const r3 = scroll.visible(4 / 5, 1 / 5)
+        const r1 = scroll.range(0, 1 / 10)
+        const r2 = scroll.range(1 / 10, 4 / 10)
+        const r3 = scroll.range(4 / 10, 6 / 10)
+        // const r3 = scroll.visible(4 / 10, 6 / 10)
 
         const et = state.clock.getElapsedTime
         const offset = 1 - scroll.offset
+
+        contaminant.current.rotation.y += Math.PI * 0.001
 
         // group.current.rotation.y = THREE.MathUtils.damp(group.current.rotation.y, (-Math.PI / 5) * r2, 0.01, delta)
         // group.current.position.x = THREE.MathUtils.damp(group.current.position.x, (-width / 7) * r2, 0.01, delta)
@@ -41,27 +52,26 @@ export default function Micelle({ mouse })
         group.current.position.y = - scroll.offset * 0.5
         text.current.position.y = - scroll.offset * 0.5
 
-        if (scroll.offset > 0)
+        if (scroll.offset > 0 )
         {
-            group.current.rotation.y = - THREE.MathUtils.damp(right.current.rotation.y, scroll.offset * 7, 0.1, delta)
-            group.current.position.z = THREE.MathUtils.damp(group.current.position.z, scroll.offset * 1.5, 5, delta)
-
-            right.current.rotation.y = THREE.MathUtils.damp(right.current.rotation.y, scroll.offset * 1.2, 4, delta)
-            right.current.position.x =  THREE.MathUtils.damp(right.current.position.x, scroll.offset * 0.5, 4, delta)
-
-            left.current.rotation.y = THREE.MathUtils.damp(left.current.rotation.y, - scroll.offset * 0.85, 4, delta)
-            left.current.position.x = THREE.MathUtils.damp(left.current.position.x, - scroll.offset * 1, 4, delta)
-            // left.current.position.z = THREE.MathUtils.damp(left.current.position.z, - scroll.offset * 2, 4, delta)
-
-            contaminant.current.position.z = THREE.MathUtils.damp(contaminant.current.position.z, scroll.offset * 0.85, 5, delta)
+            // Group Animation
+            group.current.rotation.y = - THREE.MathUtils.damp(right.current.rotation.y, r1, 0.1, delta)
+            group.current.position.z = THREE.MathUtils.damp(group.current.position.z, r1, 5, delta)
+            group.current.position.x = THREE.MathUtils.damp(group.current.position.x, r1 * 0.6, 5, delta)
+            // group.current.position.y = THREE.MathUtils.damp(right.current.rotation.y, - r3, 0.1, delta)
+            
+            // Micelle Right Anim
+            right.current.rotation.y = THREE.MathUtils.damp(right.current.rotation.y, r1, 4, delta)
+            right.current.position.x =  THREE.MathUtils.damp(right.current.position.x, r1 * 0.4, 4, delta)
+            
+            // Micelle Left Anim
+            left.current.rotation.y = THREE.MathUtils.damp(left.current.rotation.y, - r1, 4, delta)
+            left.current.position.x = THREE.MathUtils.damp(left.current.position.x, - r1, 4, delta)
+            
+            // Micelle Contaminant Anim
+            contaminant.current.position.z = THREE.MathUtils.damp(contaminant.current.position.z, r1 * 1.15, 5, delta)
         }
 
-        // if (scroll.offset >= 0.5) group.current.position.z = THREE.MathUtils.damp(group.current.position.x, scroll.offset * 50, 2, delta)
-        
-        // right.current.position.x = (Math.PI + (Math.PI / 2) * rsqw(r1) + r2 * 0.33) / 5
-        // left.current.position.x = (Math.PI - (Math.PI / 2) * rsqw(r1) - r2 * 0.39) / 5
-        console.log('scroll offset', offset)
-        // console.log(THREE.MathUtils.damp(group.current.position.y, -height * r2, 4, delta), scroll.offset)
     })
 
     console.log(nodes, materials)
@@ -83,12 +93,12 @@ export default function Micelle({ mouse })
                 <Text 
                     font={"./ClashDisplay-Semibold.woff"}
                     fontSize={ 0.2 }
-                    position={ [ 0.5, 1.15, 1.25 ] }
+                    position={ [ 0.5, 1, 1.25 ] }
                     rotation-y={ - 0.0 }
                     maxWidth={ 3 }
                     textAlign="center"
                     lineHeight={ 0.8 }
-                    color={ "black" }
+                    color={ "white" }
                 >
                     Cool-Ox
                 </Text>
@@ -96,12 +106,12 @@ export default function Micelle({ mouse })
                 <Text 
                     font={"./ClashDisplay-Regular.woff"}
                     fontSize={ 0.1 }
-                    position={ [ 0.30, 1, 1.25 ] }
+                    position={ [ 0.30, 0.85, 1.25 ] }
                     rotation-y={ - 0.0 }
                     maxWidth={ 3 }
                     textAlign="left"
                     lineHeight={ 0.8 }
-                    color={ "black" }
+                    color={ "white" }
                 >
                     Cool-Ox
                 </Text>
@@ -121,8 +131,10 @@ export default function Micelle({ mouse })
                         geometry={ nodes.headsLeft.geometry }
                         material={ nodes.headsLeft.material}
                         scale={ 0.8 }
+                        roughness={ 0 }
+                        metalness={ 1 }
                     >
-                        {/* <meshStandardMaterial color={ 'purple' }  roughness={ 0.7 } envMapIntensity={ 0.2 } emissive="#135675" map={ blueMats } emissiveIntensity={ 0.05 }/> */}
+                        <meshStandardMaterial color={ '#243fa8' }  roughness={ 0.7 } envMapIntensity={ 0.85 } emissive="#135675" map={ blueMats } emissiveIntensity={ 0.05 }/>
                     </mesh>
 
                     <mesh
@@ -143,6 +155,7 @@ export default function Micelle({ mouse })
                         material={ nodes.headsRight.material}
                         scale={ 0.8 }
                     >
+                        <meshStandardMaterial color={ '#243fa8' }  roughness={ 0.7 } envMapIntensity={ 0.85 } emissive="#135675" map={ blueMats } emissiveIntensity={ 0.05 }/>
                         {/* <meshStandardMaterial color={ 'purple' } flatShading/> */}
                     </mesh>
                     <mesh
@@ -160,10 +173,18 @@ export default function Micelle({ mouse })
                 <mesh
                     ref={ contaminant }
                     geometry={ nodes.contaminant.geometry }
-                    material={ nodes.contaminant.material}
                     scale={ 0.8 }
                 >
-                    {/* <meshStandardMaterial color={ 'purple' } flatShading/> */}
+                    <meshStandardMaterial 
+                        color={ '#c0bbb6' } 
+                        normalMap={ contaminantNRM } 
+                        map={ contaminantColor } 
+                        envMapIntensity={ 0.5 } 
+                        roughnessMap={ contaminantGloss }
+                        aoMap={ contaminantAO }
+                        roughness= { 0.65 }
+                        displacementScale={ 0.1 }
+                        />
                 </mesh>
             </group>
         </Float>
