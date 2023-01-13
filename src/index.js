@@ -29,7 +29,7 @@ root.render(
         >
 
             {/* <Scroll /> */}
-            <ScrollControls pages={10} damping={ 0.3 } horizontal>
+            <ScrollControls pages={10} damping={ 0.3 } >
                 <Scroll>
                     {/* <PresentationControls
                         global
