@@ -1,4 +1,4 @@
-import { useGLTF, Text, Float, ScrollControls, Environment, Html, softShadows, useScroll, Sparkles, useTexture } from "@react-three/drei"
+import { useGLTF, Text, Float, ScrollControls, MeshTransmissionMaterial, Environment, Html, softShadows, useScroll, Sparkles, useTexture } from "@react-three/drei"
 import { Suspense, useRef, useState } from "react"
 import { useFrame, useThree, Canvas, useLoader } from "@react-three/fiber"
 import { useControls } from 'leva'
@@ -34,10 +34,10 @@ export default function Micelle({ mouse })
     // const contaminantGloss = useTexture('RoadDirt017_GLOSS_3K-min.jpg')
     // const contaminantAO = useTexture('RoadDirt017_AO_3K-min.jpg')
 
-    const contaminantColor = useLoader(TextureLoader, 'RoadDirt017_COL_3k-min.jpg')
-    const contaminantNRM = useLoader(TextureLoader, 'RoadDirt017_NRM_3K-min (1).jpg')
-    const contaminantGloss = useLoader(TextureLoader, 'RoadDirt017_GLOSS_3K-min.jpg')
-    const contaminantAO = useLoader(TextureLoader, 'RoadDirt017_AO_3K-min.jpg')
+    // const contaminantColor = useLoader(TextureLoader, 'RoadDirt017_COL_3k-min.jpg')
+    // const contaminantNRM = useLoader(TextureLoader, 'RoadDirt017_NRM_3K-min (1).jpg')
+    // const contaminantGloss = useLoader(TextureLoader, 'RoadDirt017_GLOSS_3K-min.jpg')
+    // const contaminantAO = useLoader(TextureLoader, 'RoadDirt017_AO_3K-min.jpg')
 
     let meshOpacity = 1
 
@@ -52,17 +52,37 @@ export default function Micelle({ mouse })
         opacity: meshOpacity
     })
     
-    const contaminantMaterial = new THREE.MeshStandardMaterial({
-        color: 'rgba(70, 30, 30, 0.766)',
-        normalMap: contaminantNRM,
-        map: contaminantColor,
-        envMapIntensity: 0.5,
-        roughnessMap: contaminantGloss,
-        aoMap: contaminantAO,
-        roughness: 0.65,
-        displacementScale: 0.1,
-        opacity: meshOpacity
-    })
+    // const contaminantMaterial = new THREE.MeshStandardMaterial({
+    //     color: 'rgba(70, 30, 30, 0.766)',
+    //     normalMap: contaminantNRM,
+    //     map: contaminantColor,
+    //     envMapIntensity: 0.5,
+    //     roughnessMap: contaminantGloss,
+    //     aoMap: contaminantAO,
+    //     roughness: 0.65,
+    //     displacementScale: 0.1,
+    //     opacity: meshOpacity
+    // })
+
+    const config = useControls({
+        meshPhysicalMaterial: false,
+        transmissionSampler: false,
+        samples: { value: 6, min: 1, max: 32, step: 1 },
+        resolution: { value: 1024, min: 256, max: 2048, step: 256 },
+        transmission: { value: 1, min: 0, max: 1 },
+        roughness: { value: 0.260, min: 0, max: 1, step: 0.01 },
+        thickness: { value: 3.5, min: 0, max: 10, step: 0.01 },
+        ior: { value: 1.13, min: 1, max: 5, step: 0.01 },
+        chromaticAberration: { value: 0.06, min: 0, max: 1 },
+        anisotropy: { value: 0.15, min: 0, max: 1, step: 0.01 },
+        distortion: { value: 1.0, min: 0, max: 1, step: 0.01 },
+        distortionScale: { value: 0.55, min: 0.01, max: 1, step: 0.01 },
+        temporalDistortion: { value: 0.5, min: 0, max: 1, step: 0.01 },
+        attenuationDistance: { value: 0.61, min: 0, max: 10, step: 0.01 },
+        attenuationColor: '#fcdede',
+        color: '#ffcece',
+        bg: '#000000'
+      })
 
 
 
@@ -125,7 +145,7 @@ export default function Micelle({ mouse })
                 noise={ [ 0.25, 0.25, 0.25 ]}
                 speed={ 0.2}
                 size={ 1 }
-                color="#2a2a2e"
+                color="white"
             />
             
             <group ref={ text }>
@@ -209,12 +229,20 @@ export default function Micelle({ mouse })
                     {/* Contaminant */}
                     <mesh
                         ref={ contaminant }
-                        geometry={ nodes.contaminant.geometry }
-                        scale={ 0.8 }
-                        material={ contaminantMaterial }
+                        scale={ 0.4 }
                         transparent={ true }
+                    
                     >
+                     <sphereGeometry />
+                        <MeshTransmissionMaterial background={new THREE.Color(config.bg)} {...config }/>
                     </mesh>
+
+                    {/* <mesh
+                    position={ [ -1, 0, 1] }
+                    >
+                        <sphereGeometry />
+                        <MeshTransmissionMaterial background={new THREE.Color(config.bg)} {...config }/>
+                    </mesh> */}
                 </group>
             </Suspense>
         </Float>
