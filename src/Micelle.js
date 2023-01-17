@@ -1,9 +1,10 @@
 import { useGLTF, Text, Float, ScrollControls, Environment, Html, softShadows, useScroll, Sparkles, useTexture } from "@react-three/drei"
 import { Suspense, useRef, useState } from "react"
-import { useFrame, useThree, Canvas } from "@react-three/fiber"
+import { useFrame, useThree, Canvas, useLoader } from "@react-three/fiber"
 import { useControls } from 'leva'
 import * as THREE from 'three'
 import useRefs from 'react-use-refs'
+import { TextureLoader } from "three/src/loaders/TextureLoader"
 
 const rsqw = (t, delta = 0.1, a = 1, f = 1 / (2 * Math.PI)) => (a / Math.atan(1 / delta)) * Math.atan(Math.sin(2 * Math.PI * t * f) / delta)
 
@@ -23,10 +24,15 @@ export default function Micelle({ mouse })
     const blueMats = useTexture('./heads-matcap.png')
     
     // Contaminant Textures
-    const contaminantColor = useTexture('./RoadDirt017_COL_3k-min-min.png')
-    const contaminantNRM = useTexture('./RoadDirt017_NRM_3k-min (1)-min.png')
-    const contaminantGloss = useTexture('./RoadDirt017_GLOSS_3k-min-min.png')
-    const contaminantAO = useTexture('./RoadDirt017_AO_3k-min-min.png')
+    // const contaminantColor = useTexture('./RoadDirt017_COL_3k-min-min.png')
+    // const contaminantNRM = useTexture('./RoadDirt017_NRM_3k-min (1)-min.png')
+    // const contaminantGloss = useTexture('./RoadDirt017_GLOSS_3k-min-min.png')
+    // const contaminantAO = useTexture('./RoadDirt017_AO_3k-min-min.png')
+
+    const contaminantColor = useLoader(TextureLoader, 'RoadDirt017_COL_3k-min.jpg')
+    const contaminantNRM = useLoader(TextureLoader, 'RoadDirt017_NRM_3K-min (1).jpg')
+    const contaminantGloss = useLoader(TextureLoader, 'RoadDirt017_GLOSS_3K-min.jpg')
+    const contaminantAO = useLoader(TextureLoader, 'RoadDirt017_AO_3K-min.jpg')
 
     let meshOpacity = 1
 
