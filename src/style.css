@@ -12,5 +12,5 @@ canvas,
     /* background-color: rgb(118, 155, 255); */
     /* background-color: rgba(0, 60, 255, 0.166); */
     /* background-color: rgba(60, 3, 3, 0.166); */
-    background-color: #000000;
+    background: linear-gradient(#302f40, black, #000);
 }

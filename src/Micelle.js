@@ -23,22 +23,7 @@ export default function Micelle({ mouse })
     // Micelle Texture - Possibly
     const blueMats = useTexture('heads-matcap.png')
     
-    // Contaminant Textures
-    // const contaminantColor = useTexture('./RoadDirt017_COL_3k-min-min.png')
-    // const contaminantNRM = useTexture('./RoadDirt017_NRM_3k-min (1)-min.png')
-    // const contaminantGloss = useTexture('./RoadDirt017_GLOSS_3k-min-min.png')
-    // const contaminantAO = useTexture('./RoadDirt017_AO_3k-min-min.png')
-
-    // const contaminantColor = useTexture('RoadDirt017_COL_3k-min.jpg')
-    // const contaminantNRM = useTexture('RoadDirt017_NRM_3K-min (1).jpg')
-    // const contaminantGloss = useTexture('RoadDirt017_GLOSS_3K-min.jpg')
-    // const contaminantAO = useTexture('RoadDirt017_AO_3K-min.jpg')
-
-    // const contaminantColor = useLoader(TextureLoader, 'RoadDirt017_COL_3k-min.jpg')
-    // const contaminantNRM = useLoader(TextureLoader, 'RoadDirt017_NRM_3K-min (1).jpg')
-    // const contaminantGloss = useLoader(TextureLoader, 'RoadDirt017_GLOSS_3K-min.jpg')
-    // const contaminantAO = useLoader(TextureLoader, 'RoadDirt017_AO_3K-min.jpg')
-
+   
     let meshOpacity = 1
 
     // Three.js Materials
@@ -52,19 +37,8 @@ export default function Micelle({ mouse })
         opacity: meshOpacity
     })
     
-    // const contaminantMaterial = new THREE.MeshStandardMaterial({
-    //     color: 'rgba(70, 30, 30, 0.766)',
-    //     normalMap: contaminantNRM,
-    //     map: contaminantColor,
-    //     envMapIntensity: 0.5,
-    //     roughnessMap: contaminantGloss,
-    //     aoMap: contaminantAO,
-    //     roughness: 0.65,
-    //     displacementScale: 0.1,
-    //     opacity: meshOpacity
-    // })
 
-    const config = useControls({
+    const config = useControls('contaminant', {
         meshPhysicalMaterial: false,
         transmissionSampler: false,
         samples: { value: 6, min: 1, max: 32, step: 1 },
@@ -82,18 +56,15 @@ export default function Micelle({ mouse })
         attenuationColor: '#fcdede',
         color: '#ffcece',
         bg: '#000000'
-      })
+    })
 
-
-
-    // console.log(photo)
     const standardRotation = 0
     
     useFrame((state, delta) => 
     {
-        const r1 = scroll.range(0, 1 / 10)
-        const r2 = scroll.range(1 / 10, 4 / 10)
-        const r3 = scroll.range(4 / 10, 6 / 10)
+        const r1 = scroll.range(0, 1 / 20)
+        const r2 = scroll.range(1 / 20, 4 / 20)
+        const r3 = scroll.range(4 / 20, 6 / 20)
         // const r3 = scroll.visible(4 / 10, 6 / 10)
 
         const et = state.clock.getElapsedTime
@@ -101,16 +72,10 @@ export default function Micelle({ mouse })
 
         contaminant.current.rotation.y += Math.PI * 0.001
 
-        // group.current.rotation.y = THREE.MathUtils.damp(group.current.rotation.y, (-Math.PI / 5) * r2, 0.01, delta)
-        // group.current.position.x = THREE.MathUtils.damp(group.current.position.x, (-width / 7) * r2, 0.01, delta)
-        // group.current.scale.x = group.current.scale.y = group.current.scale.z = THREE.MathUtils.damp(group.current.scale.z, 1 + 0.24 * (1 - rsqw(r1)), 5, delta)
-        // group.current.rotation.y = - Math.PI + (Math.PI / 2) * rsqw(r1) + r2 * 0.33
-        // // left.current.rotation.y = Math.PI + (Math.PI / 2) * rsqw(r1) - r2 * 0.39
         group.current.position.y = - scroll.offset * 0.5
         text.current.position.y = - scroll.offset * 0.5
 
-        if (scroll.offset > 0 )
-        {
+        
             // Group Animation
             group.current.rotation.y = - THREE.MathUtils.damp(right.current.rotation.y, r1, 0.1, delta)
             group.current.position.z = THREE.MathUtils.damp(group.current.position.z, r1, 5, delta)
@@ -127,9 +92,11 @@ export default function Micelle({ mouse })
             
             // Micelle Contaminant Anim
             contaminant.current.position.z = THREE.MathUtils.damp(contaminant.current.position.z, r1 * 1.15, 5, delta)
-        }
-
+        
+        if (scroll.scroll.current > 0.4) { meshOpacity = 0 }
         meshOpacity = offset
+        console.log('current', scroll.scroll.current)
+        console.log('offset', scroll.offset)
 
     })
 
@@ -231,18 +198,10 @@ export default function Micelle({ mouse })
                         ref={ contaminant }
                         scale={ 0.4 }
                         transparent={ true }
-                    
                     >
-                     <sphereGeometry />
                         <MeshTransmissionMaterial background={new THREE.Color(config.bg)} {...config }/>
-                    </mesh>
-
-                    {/* <mesh
-                    position={ [ -1, 0, 1] }
-                    >
                         <sphereGeometry />
-                        <MeshTransmissionMaterial background={new THREE.Color(config.bg)} {...config }/>
-                    </mesh> */}
+                    </mesh>
                 </group>
             </Suspense>
         </Float>
