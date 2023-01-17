@@ -20,6 +20,9 @@ export default function Micelle({ mouse })
     const micelle = useRef()
     const text = useRef()
 
+    const nrm = 'RoadDirt017_NRM_3K-min (1).jpg';
+    console.log(nrm)
+
     // Micelle Texture - Possibly
     const blueMats = useTexture('./heads-matcap.png')
     
@@ -29,10 +32,10 @@ export default function Micelle({ mouse })
     // const contaminantGloss = useTexture('./RoadDirt017_GLOSS_3k-min-min.png')
     // const contaminantAO = useTexture('./RoadDirt017_AO_3k-min-min.png')
 
-    const contaminantColor = useLoader(TextureLoader, 'RoadDirt017_COL_3k-min.jpg')
-    const contaminantNRM = useLoader(TextureLoader, 'RoadDirt017_NRM_3K-min (1).jpg')
-    const contaminantGloss = useLoader(TextureLoader, 'RoadDirt017_GLOSS_3K-min.jpg')
-    const contaminantAO = useLoader(TextureLoader, 'RoadDirt017_AO_3K-min.jpg')
+    const contaminantColor = useTexture('./RoadDirt017_COL_3k-min.jpg')
+    const contaminantNRM = useTexture('./RoadDirt017_NRM_3K-min (1).jpg')
+    const contaminantGloss = useTexture('./RoadDirt017_GLOSS_3K-min.jpg')
+    const contaminantAO = useTexture('./RoadDirt017_AO_3K-min.jpg')
 
     let meshOpacity = 1
 
