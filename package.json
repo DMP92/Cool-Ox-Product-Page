@@ -7,6 +7,12 @@
     "dev": "react-scripts start",
     "build": "react-scripts build"
   },
+  "files": [
+    "RoadDirt017_AO_3K-min.jpg",
+    "RoadDirt017_COL_3K-min.jpg",
+    "RoadDirt017_DISP_3K.jpg",
+    "RoadDirt017_GLOSS_3K-min.jpg"
+  ],
   "keywords": [],
   "author": "",
   "license": "ISC",
