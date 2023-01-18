@@ -1,4 +1,4 @@
-import { OrbitControls, useGLTF, PresentationControls, Environment, Html, Scroll, ScrollControls, useScroll } from '@react-three/drei'
+import { OrbitControls, Sparkles, useGLTF, PresentationControls, Environment, Html, Scroll, ScrollControls, useScroll } from '@react-three/drei'
 import * as THREE from 'three'
 import Micelle from './Micelle.js'
 import { Perf } from 'r3f-perf'
@@ -23,9 +23,7 @@ export default function Experience()
         state.camera.rotation.y = THREE.MathUtils.lerp(state.camera.rotation.y, state.mouse.x * -Math.PI * 0.025, 0.001)
         
         
-        console.log(scroll.offset)
-        scroll.offset === 1 ? setRender(false) : setRender(true)
-        console.log(- scroll.offset)
+        scroll.scroll.current >= 1 ? setRender(false) : setRender(true)
         // console.log(mouse)
     })
 
@@ -34,13 +32,30 @@ export default function Experience()
         <Perf position="top-left"/>
 
         {/* Lights */}
-        <directionalLight intensity={ 1 } position={ [ -5, 1, 8 ] }/>
-        <ambientLight intensity={ 0.3 }/>
-        <Environment preset='city' />
+            <Sparkles 
+                scale={ [ 5, 25, 5 ] }
+                count={ 500 }
+                noise={ [ 0.25, 0.25, 0.25 ]}
+                speed={ 0.2}
+                size={ 1 }
+                color="white"
+            />
+                    
+            <directionalLight intensity={ 1 } position={ [ -5, 1, 8 ] }/>
+            <ambientLight intensity={ 0.3 }/>
+            <Environment preset='city' />
 
-        {/* Components */}
-        { render && <Micelle /> }
-
+            {/* Components */}
+            { render && <Micelle /> }
+        {/* <PresentationControls
+            global
+            rotation={ [ 0.13, 0.1, 0] }
+            polar={ [ -0.4, 0.2 ] }
+            azimuth={ [ -1, 0.75 ] }
+            config={ { mass: 2, tension: 400 } }
+            snap={ { mass: 4, tension: 400 } }
+        >
+        </PresentationControls> */}
         
 
     </>

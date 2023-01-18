@@ -29,17 +29,9 @@ root.render(
         >
 
             {/* <Scroll /> */}
-            <ScrollControls pages={10} damping={ 0.15 } >
+            <ScrollControls pages={20}>
                 <Scroll>
-                    {/* <PresentationControls
-                        global
-                        rotation={ [ 0.13, 0.1, 0] }
-                        polar={ [ -0.4, 0.2 ] }
-                        azimuth={ [ -1, 0.75 ] }
-                        config={ { mass: 2, tension: 400 } }
-                        snap={ { mass: 4, tension: 400 } }
-                    >
-                    </PresentationControls> */}
+                    
                 </Scroll>
                     <Experience />
             </ScrollControls>

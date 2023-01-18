@@ -34,7 +34,8 @@ export default function Micelle({ mouse })
         emissive: '#135675', 
         map: blueMats, 
         emissiveIntensity: 0.05,
-        opacity: meshOpacity
+        opacity: meshOpacity,
+        transparent: true
     })
     
 
@@ -59,44 +60,64 @@ export default function Micelle({ mouse })
     })
 
     const standardRotation = 0
-    
+
     useFrame((state, delta) => 
     {
         const r1 = scroll.range(0, 1 / 20)
-        const r2 = scroll.range(1 / 20, 4 / 20)
-        const r3 = scroll.range(4 / 20, 6 / 20)
+        const r2 = scroll.range(1 / 20, 1/ 20)
+        const r3 = scroll.range(5 / 20, 6/ 20)
+        const r4 = scroll.range(6/20, 5/20)
         // const r3 = scroll.visible(4 / 10, 6 / 10)
+        const height = window.innerHeight
 
         const et = state.clock.getElapsedTime
-        const offset = 1 - scroll.offset
+        const offset = 1 - scroll.scroll.current
 
         contaminant.current.rotation.y += Math.PI * 0.001
 
-        group.current.position.y = - scroll.offset * 0.5
-        text.current.position.y = - scroll.offset * 0.5
+        group.current.position.y = - scroll.scroll.current * 0.2
+        text.current.position.y = - scroll.scroll.current * 0.2
 
+        // Group Animation
+        group.current.rotation.y = - THREE.MathUtils.damp(right.current.rotation.y, r1 * 4.0, 0.1, delta)
+        group.current.position.z = THREE.MathUtils.damp(group.current.position.z, rsqw(r1) + r2 * 0.2, 5, delta)
+        group.current.position.x = THREE.MathUtils.damp(group.current.position.x, r1 * 0.4, 5, delta)
         
-            // Group Animation
-            group.current.rotation.y = - THREE.MathUtils.damp(right.current.rotation.y, r1, 0.1, delta)
-            group.current.position.z = THREE.MathUtils.damp(group.current.position.z, r1, 5, delta)
-            group.current.position.x = THREE.MathUtils.damp(group.current.position.x, r1 * 0.6, 5, delta)
-            // group.current.position.y = THREE.MathUtils.damp(right.current.rotation.y, - r3, 0.1, delta)
-            
-            // Micelle Right Anim
-            right.current.rotation.y = THREE.MathUtils.damp(right.current.rotation.y, r1, 4, delta)
-            right.current.position.x =  THREE.MathUtils.damp(right.current.position.x, r1 * 0.4, 4, delta)
-            
-            // Micelle Left Anim
-            left.current.rotation.y = THREE.MathUtils.damp(left.current.rotation.y, - r1, 4, delta)
-            left.current.position.x = THREE.MathUtils.damp(left.current.position.x, - r1, 4, delta)
-            
-            // Micelle Contaminant Anim
-            contaminant.current.position.z = THREE.MathUtils.damp(contaminant.current.position.z, r1 * 1.15, 5, delta)
+        // Group Outro Animations
+        group.current.rotation.z = THREE.MathUtils.damp(group.current.rotation.z, (r3 * 5.0), 5, delta)
+        group.current.rotation.x = THREE.MathUtils.damp(group.current.rotation.x, (r3), 8, delta)
+        group.current.position.x = THREE.MathUtils.damp(group.current.position.x, rsqw(r4) + (width * r3), 5, delta)
+        group.current.position.z = THREE.MathUtils.damp(group.current.position.z, rsqw(r4) + (width * r3), 5, delta)
+
+        // group.current.position.y = - THREE.MathUtils.damp(group.current.position.y, (-height / 10 ) * r4, 5.0, delta)
+        // group.current.position.x = THREE.MathUtils.damp(group.current.position.x, (width * 2) * r3, 5.0, delta)
         
-        if (scroll.scroll.current > 0.4) { meshOpacity = 0 }
-        meshOpacity = offset
-        console.log('current', scroll.scroll.current)
-        console.log('offset', scroll.offset)
+        // Text Animations
+
+        text.current.children.forEach((text) =>
+        {
+            if (r4 != 0)
+            text.material.opacity = THREE.MathUtils.damp(text.material.opacity, 0, 5, delta)
+            else if (r4 == 0)
+            text.material.opacity = 1
+            
+        })
+        
+        text.current.position.x = THREE.MathUtils.damp(text.current.position.x, rsqw(r4) + (-width * r3), 5, delta)
+        
+        // Micelle Right Anim
+        right.current.rotation.y = THREE.MathUtils.damp(right.current.rotation.y, r1, 4, delta)
+        right.current.position.x =  THREE.MathUtils.damp(right.current.position.x, r1 * 0.4, 4, delta)
+        
+        // Micelle Left Anim
+        left.current.rotation.y = THREE.MathUtils.damp(left.current.rotation.y, - r1, 4, delta)
+        left.current.position.x = THREE.MathUtils.damp(left.current.position.x, - r1, 4, delta)
+        
+        // Micelle Contaminant Anim
+        contaminant.current.position.z = THREE.MathUtils.damp(contaminant.current.position.z, r1 * 0.9, 5, delta)
+        contaminant.current.position.y = THREE.MathUtils.damp(contaminant.current.position.y, r3 * -25, 5, delta)
+        contaminant.current.position.x = THREE.MathUtils.damp(contaminant.current.position.x, r4 * -25, 5, delta)
+
 
     })
 
@@ -106,14 +127,7 @@ export default function Micelle({ mouse })
         <Float
             rotationIntensity={ 0.4 }
         >
-            <Sparkles 
-                scale={ [ 5, 25, 5 ] }
-                count={ 500 }
-                noise={ [ 0.25, 0.25, 0.25 ]}
-                speed={ 0.2}
-                size={ 1 }
-                color="white"
-            />
+            
             
             <group ref={ text }>
                 <Text 
