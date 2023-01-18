@@ -4,6 +4,7 @@ import Micelle from './Micelle.js'
 import { Perf } from 'r3f-perf'
 import { useFrame } from '@react-three/fiber'
 import React, { useState, useRef, useEffect } from 'react'
+import { EffectComposer, SSAO, Bloom } from '@react-three/postprocessing'
 
 export default function Experience()
 {
@@ -40,13 +41,33 @@ export default function Experience()
                 size={ 1 }
                 color="white"
             />
-                    
+
             <directionalLight intensity={ 1 } position={ [ -5, 1, 8 ] }/>
             <ambientLight intensity={ 0.3 }/>
             <Environment preset='city' />
+            
+         
+                    
 
             {/* Components */}
             { render && <Micelle /> }
+            <EffectComposer>
+                <SSAO 
+                    samples={7} // amount of samples per pixel (shouldn't be a multiple of the ring count)
+                    rings={4} // amount of rings in the occlusion sampling pattern
+                    distanceThreshold={1.0} // global distance threshold at which the occlusion effect starts to fade out. min: 0, max: 1
+                    distanceFalloff={0.0} // distance falloff. min: 0, max: 1
+                    rangeThreshold={0.5} // local occlusion range threshold at which the occlusion starts to fade out. min: 0, max: 1
+                    rangeFalloff={0.1} // occlusion range falloff. min: 0, max: 1
+                    luminanceInfluence={0.9} // how much the luminance of the scene influences the ambient occlusion
+                    intensity={ 50 }
+                    radius={20} // occlusion sampling radius
+                    scale={0.5} // scale of the ambient occlusion
+                    bias={0.5} // occlusion bias
+                    color="red"
+                ></SSAO>
+                <Bloom intensity={1.25} kernelSize={3} luminanceThreshold={0.5} luminanceSmoothing={0.0} />
+            </EffectComposer>
         {/* <PresentationControls
             global
             rotation={ [ 0.13, 0.1, 0] }

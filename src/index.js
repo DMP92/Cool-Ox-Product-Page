@@ -6,7 +6,7 @@ import Micelle from './Micelle.js'
 import { Leva } from 'leva'
 import { StrictMode } from 'react'
 import { ScrollControls, Scroll } from '@react-three/drei'
-
+import { EffectComposer, SSAO, Bloom } from '@react-three/postprocessing'
 
 console.log(Micelle)
 
@@ -24,9 +24,10 @@ root.render(
                 near: 0.1,
                 far: 200,
                 position: [ 0, 0, 5 ],
-                className:"canvas"
+                className:"canvas",
             }}
         >
+            
 
             {/* <Scroll /> */}
             <ScrollControls pages={20}>
@@ -34,8 +35,8 @@ root.render(
                     
                 </Scroll>
                     <Experience />
+            
             </ScrollControls>
-        
         </Canvas>
         
     </StrictMode>

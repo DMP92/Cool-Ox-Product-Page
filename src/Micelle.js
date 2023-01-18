@@ -5,6 +5,7 @@ import { useControls } from 'leva'
 import * as THREE from 'three'
 import useRefs from 'react-use-refs'
 import { TextureLoader } from "three/src/loaders/TextureLoader"
+import { EffectComposer, SSAO, Bloom } from '@react-three/postprocessing'
 
 const rsqw = (t, delta = 0.1, a = 1, f = 1 / (2 * Math.PI)) => (a / Math.atan(1 / delta)) * Math.atan(Math.sin(2 * Math.PI * t * f) / delta)
 
@@ -88,6 +89,7 @@ export default function Micelle({ mouse })
         group.current.rotation.x = THREE.MathUtils.damp(group.current.rotation.x, (r3), 8, delta)
         group.current.position.x = THREE.MathUtils.damp(group.current.position.x, rsqw(r4) + (width * r3), 5, delta)
         group.current.position.z = THREE.MathUtils.damp(group.current.position.z, rsqw(r4) + (width * r3), 5, delta)
+        // group.current.position.y = THREE.MathUtils.damp(group.current.position.y, rsqw(r4) + (height * r3), 0.5, delta)
 
         // group.current.position.y = - THREE.MathUtils.damp(group.current.position.y, (-height / 10 ) * r4, 5.0, delta)
         // group.current.position.x = THREE.MathUtils.damp(group.current.position.x, (width * 2) * r3, 5.0, delta)
@@ -114,8 +116,11 @@ export default function Micelle({ mouse })
         left.current.position.x = THREE.MathUtils.damp(left.current.position.x, - r1, 4, delta)
         
         // Micelle Contaminant Anim
+        // In
         contaminant.current.position.z = THREE.MathUtils.damp(contaminant.current.position.z, r1 * 0.9, 5, delta)
-        contaminant.current.position.y = THREE.MathUtils.damp(contaminant.current.position.y, r3 * -25, 5, delta)
+        
+        // Out
+        contaminant.current.position.y = THREE.MathUtils.damp(contaminant.current.position.y, r3 * 25, 5, delta)
         contaminant.current.position.x = THREE.MathUtils.damp(contaminant.current.position.x, r4 * -25, 5, delta)
 
 
