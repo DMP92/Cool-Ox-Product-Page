@@ -52,8 +52,8 @@ export default function Experience()
             {/* Components */}
             { render && <Micelle /> }
             <EffectComposer>
-                <SSAO 
-                    // samples={5} // amount of samples per pixel (shouldn't be a multiple of the ring count)
+                {/* <SSAO 
+                    samples={5} // amount of samples per pixel (shouldn't be a multiple of the ring count)
                     rings={4} // amount of rings in the occlusion sampling pattern
                     distanceThreshold={1.0} // global distance threshold at which the occlusion effect starts to fade out. min: 0, max: 1
                     distanceFalloff={0.0} // distance falloff. min: 0, max: 1
@@ -65,8 +65,8 @@ export default function Experience()
                     scale={0.5} // scale of the ambient occlusion
                     bias={0.5} // occlusion bias
                     color="red"
-                ></SSAO>
-                <Bloom intensity={1.25} kernelSize={3} luminanceThreshold={0.5} luminanceSmoothing={0.0} />
+                ></SSAO> */}
+                {/* <Bloom intensity={1.25} kernelSize={3} luminanceThreshold={0.5} luminanceSmoothing={0.0} /> */}
             </EffectComposer>
         {/* <PresentationControls
             global
